@@ -20,11 +20,11 @@ public class MainActivity extends DroidGap{
         	public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long size){
         		Intent viewIntent = new Intent(Intent.ACTION_VIEW);
         		viewIntent.setDataAndType(Uri.parse(url), mimeType);
-        		try{
+        		try{ 
         			startActivity(viewIntent);
         		}
         		catch(ActivityNotFoundException ex){
-        			Log.w("MainErre","Mime형식을 찾을 수 없습니다."+mimeType);
+        			Log.w("MainErre","Mime형식을 찾을 수 없습니다.1"+mimeType);
         		}
         	}
         });

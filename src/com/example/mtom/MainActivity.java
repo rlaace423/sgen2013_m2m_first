@@ -15,7 +15,7 @@ public class MainActivity extends DroidGap{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        super.loadUrl("file:///android_asset/www/index.html");
+        super.loadUrl("file:///android_asset/www/memList.html");
         appView.setDownloadListener(new DownloadListener(){
         	public void onDownloadStart(String url, String userAgent, String contentDisposition, String mimeType, long size){
         		Intent viewIntent = new Intent(Intent.ACTION_VIEW);

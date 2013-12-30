@@ -3,21 +3,44 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
 <title>Member List</title>
-<script src="/socket.io/socket.io.js"></script>
-<script
-	src="js/jquery-1.10.2.min.js"></script>
+<script src="http://220.64.91.202:3000/socket.io/socket.io.js"></script>
+<script src="js/jquery-1.10.2.min.js"></script>
 <script>
-	var socket = io.connect('http://165.194.17.233:3000');
-	
-	// on connection to server, ask for user's name with an anonymous callback
+	var socket = io.connect('http://220.64.91.202:3000');
+
+	//first. 연결이 이루어 지면 오는 이벤트
 	socket.on('connect', function() {
-		// call the server-side function 'adduser' and send one parameter (value of prompt)
-		socket.emit('adduser', prompt("What's your name?"));
+		//프로필 정보를 서버로 보내준다.
+		var profile = {};
+		//프로필 정보를 생성
+		profile.nickname = "gilyoung";
+		profile.age = 21;
+		
+		socket.emit('set profile', profile);
+	});
+	//서버에 프로필 전송 완료
+	socket.on('profile ready',function(){
+		//접속자 정보를 가져옴
+		socket.emit('get users');
+	});
+	socket.on('user profile',function(data){
+		alert(data.toString());
 	});
 </script>
-
+<script>
+	$(document).ready(function(){
+		
+	});
+</script>
 </head>
 <body>
-
+	<p>내 정보</p>
+	이름 :
+	<span id="name"></span>
+	<br /> 나이 :
+	<span id="age"></span>
+	<div id="list">
+	
+	</div>
 </body>
 </html>

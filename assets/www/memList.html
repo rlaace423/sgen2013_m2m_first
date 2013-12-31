@@ -32,8 +32,9 @@
 		socket.emit('set profile', profile);
 	});
 	//서버에 프로필 전송 완료
-	socket.on('profile ready', function() {
+	socket.on('user connected', function() {
 		//접속자 정보를 가져옴
+		$('#list').empty();
 		socket.emit('get users');
 	});
 	//접속자 리스트 생성 및 이벤트 생성
@@ -47,8 +48,23 @@
 			//클릭이벤트 지정
 			$('.memList').click(function() {
 				//닉네임으로 대화요청하기
-				socket.emit('talk request',$(this).find('.userName').text());
+				var reqMessage = {};
+				reqMessage.profile = profile;
+				reqMessage.userName = $(this).find('.userName').text();
+				
+				socket.emit('talk request',reqMessage);
 			});
+		}
+	});
+	//채팅 요청이 들어옴
+	socket.on('talk request',function(data){
+		data.nickname = profile.nickname;
+		if (confirm('대화 요청 들어옴 이름: '+ data.userProfile.nickname +' 나이 : '+data.userProfile.age)) {
+		    data.reply = 'yes';
+			socket.emit('talk request reply',data);
+		} else {
+			data.reply = 'no';
+		    socket.emit('talk request reply',data);
 		}
 	});
 </script>

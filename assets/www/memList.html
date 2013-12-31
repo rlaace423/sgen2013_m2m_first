@@ -1,46 +1,66 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>Member List</title>
+<style>
+.memList {
+	border: solid;
+	border-width: 1px;
+	background: yellow;
+}
+</style>
 <script src="http://220.64.91.202:3000/socket.io/socket.io.js"></script>
 <script src="js/jquery-1.10.2.min.js"></script>
 <script>
 	var socket = io.connect('http://220.64.91.202:3000');
 
-	//first. ¿¬°áÀÌ ÀÌ·ç¾î Áö¸é ¿À´Â ÀÌº¥Æ®
+	//í”„ë¡œí•„ ì •ë³´
+	var profile = {};
+
+	//first. ì—°ê²°ì´ ì´ë£¨ì–´ ì§€ë©´ ì˜¤ëŠ” ì´ë²¤íŠ¸
 	socket.on('connect', function() {
-		//ÇÁ·ÎÇÊ Á¤º¸¸¦ ¼­¹ö·Î º¸³»ÁØ´Ù.
-		var profile = {};
-		//ÇÁ·ÎÇÊ Á¤º¸¸¦ »ı¼º
-		profile.nickname = "gilyoung";
-		profile.age = 21;
-		
+		//í”„ë¡œí•„ ì •ë³´ë¥¼ ì„œë²„ë¡œ ë³´ë‚´ì¤€ë‹¤.
+
+		//í”„ë¡œí•„ ì •ë³´ë¥¼ ìƒì„±
+		profile.nickname = prompt("ì´ë¦„ì„ ì´ë ¥í•˜ì„¸ìš”:", "");
+		profile.age = prompt("ë‚˜ì´ë¥¼ ì´ë ¥í•˜ì„¸ìš”:", "");
+
+		$('#name').html(profile.nickname);
+		$('#age').html(profile.age);
+
 		socket.emit('set profile', profile);
 	});
-	//¼­¹ö¿¡ ÇÁ·ÎÇÊ Àü¼Û ¿Ï·á
-	socket.on('profile ready',function(){
-		//Á¢¼ÓÀÚ Á¤º¸¸¦ °¡Á®¿È
+	//ì„œë²„ì— í”„ë¡œí•„ ì „ì†¡ ì™„ë£Œ
+	socket.on('profile ready', function() {
+		//ì ‘ì†ì ì •ë³´ë¥¼ ê°€ì ¸ì˜´
 		socket.emit('get users');
 	});
-	socket.on('user profile',function(data){
-		alert(data.toString());
-	});
-</script>
-<script>
-	$(document).ready(function(){
-		
+	//ì ‘ì†ì ë¦¬ìŠ¤íŠ¸ ìƒì„± ë° ì´ë²¤íŠ¸ ìƒì„±
+	socket.on('user profile', function(data) {
+		if (data.nickname != profile.nickname) {
+			var tmp = '<div class="memList">' + 'ì´ë¦„ :<span class="userName">'
+					+ data.nickname + '</span><br />' + 'ë‚˜ì´ :' + data.age
+					+ '</div>';
+			$('#list').append(tmp);
+			
+			//í´ë¦­ì´ë²¤íŠ¸ ì§€ì •
+			$('.memList').click(function() {
+				//ë‹‰ë„¤ì„ìœ¼ë¡œ ëŒ€í™”ìš”ì²­í•˜ê¸°
+				socket.emit('talk request',$(this).find('.userName').text());
+			});
+		}
 	});
 </script>
 </head>
 <body>
-	<p>³» Á¤º¸</p>
-	ÀÌ¸§ :
+	<p>ë‚´ ì •ë³´</p>
+	ì´ë¦„ :
 	<span id="name"></span>
-	<br /> ³ªÀÌ :
+	<br /> ë‚˜ì´ :
 	<span id="age"></span>
-	<div id="list">
-	
-	</div>
+
+	<p>ì ‘ì†ì ì •ë³´</p>
+	<div id="list"></div>
 </body>
 </html>
